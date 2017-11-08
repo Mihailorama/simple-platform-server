@@ -50,6 +50,16 @@ cache:
 #     - ci-build-version -f package.json > build.version
 #     - echo `cat build.version`
 
+check yarn.lock:
+  stage: build
+  image: alpine
+  tags:
+  - docker
+  script:
+    grep -e 'int\.corefiling\.com' yarn.lock && exit 1
+  only:
+  - tags
+
 build:
   <<: *template_npm_script
   artifacts:
@@ -73,6 +83,6 @@ publish npm:
   script:
     - time /app/scripts/build.py
   only:
-    - develop@labs/quick-xbrl-validator
-    - tags@labs/quick-xbrl-validator
+    - develop@labs/simple-platform-server
+    - tags@labs/simple-platform-server
     - feature/inv-109-ci
