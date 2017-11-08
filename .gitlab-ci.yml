@@ -85,4 +85,3 @@ publish npm:
   only:
     - develop@labs/simple-platform-server
     - tags@labs/simple-platform-server
-    - feature/inv-109-ci
