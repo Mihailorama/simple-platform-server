@@ -1,0 +1,32 @@
+{
+  "name": "@cfl/simple-platform-server",
+  "version": "0.1.0",
+  "description": "Simple server for web apps using the CoreFiling True North Platform APIs.",
+  "main": "build/serve.js",
+  "repository": "https://gitlab.int.corefiling.com/labs/simple-platform-server.git",
+  "author": "CoreFiling <support@corefiling.com>",
+  "license": "Apache-2.0",
+  "private": false,
+  "bin": "build/serve.js",
+  "scripts": {
+    "prepare": "tsc",
+    "set-build-version": "npm version \"$(ci-build-version -f package.json)\"",
+    "lint": "tslint -t stylish -c tslint.json --project tsconfig.json",
+  },
+  "dependencies": {
+    "@types/express": "^4.0.39",
+    "@types/express-session": "^1.15.5",
+    "@types/morgan": "^1.7.35",
+    "@types/simple-oauth2": "^1.0.4",
+    "express": "^4.16.2",
+    "express-http-proxy": "^1.0.7",
+    "express-session": "^1.15.6",
+    "morgan": "^1.9.0"
+  },
+  "devDependencies": {
+    "@janslow/ci-build-version": "^0.1.1",
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "typescript": "^2.6.1"
+  }
+}
