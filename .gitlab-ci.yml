@@ -29,7 +29,7 @@ cache:
   <<: *template_npm
   stage: build
   before_script:
-    - time yarn install
+    - time yarn install --frozen-lockfile
     - npm config set git-tag-version false
     - npm run set-build-version
   script:
@@ -50,19 +50,29 @@ cache:
 #     - ci-build-version -f package.json > build.version
 #     - echo `cat build.version`
 
+check yarn.lock:
+  stage: build
+  image: alpine
+  tags:
+  - docker
+  script:
+    grep -e 'int\.corefiling\.com' yarn.lock && exit 1
+  only:
+  - tags
+
 build:
   <<: *template_npm_script
   artifacts:
     expire_in: 1 week
     paths:
       - build
-      - cli.js
+      - bin
 
 lint: *template_npm_script
 
 
 # Publish stage
-publish:npm:
+publish npm:
   <<: *template_docker_privileged
   <<: *template_npm_script
   stage: publish
@@ -73,5 +83,5 @@ publish:npm:
   script:
     - time /app/scripts/build.py
   only:
-    - develop@labs/quick-xbrl-validator
-    - tags@labs/quick-xbrl-validator
+    - develop@labs/simple-platform-server
+    - tags@labs/simple-platform-server
