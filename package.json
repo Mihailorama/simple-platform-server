@@ -7,11 +7,12 @@
     }
   },
   "description": "Simple server for web apps using the CoreFiling True North Platform APIs.",
-  "main": "build/serve.js",
+
   "repository": "https://gitlab.int.corefiling.com/labs/simple-platform-server.git",
   "author": "CoreFiling <support@corefiling.com>",
   "license": "Apache-2.0",
   "private": false,
+  "main": "build/serve.js",
   "bin": "build/cli.js",
   "files": [
     "build"
