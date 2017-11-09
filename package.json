@@ -12,9 +12,9 @@
   "author": "CoreFiling <support@corefiling.com>",
   "license": "Apache-2.0",
   "private": false,
-  "bin": "bin/cli.js",
+  "bin": "build/cli.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && cp -p bin/* build/",
     "set-build-version": "npm version \"$(ci-build-version -f package.json)\"",
     "lint": "tslint -t stylish -c tslint.json --project tsconfig.json",
     "test": "echo No tests yet.",
