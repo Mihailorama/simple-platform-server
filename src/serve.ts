@@ -176,7 +176,14 @@ export function createRouter(options: Partial<Options> = {}): Router {
       });
   });
 
-  router.get('/auth/logout', (_, res) => res.send('Logout'));  // TODO redirect to logout endpoint.
+  router.get('/auth/logout', (req, res) => {
+    if (req.session && req.session.token) {
+      delete req.session.token;
+    }
+    const nextUrl = req.header('Referer') || `${req.protocol}://${req.hostname}:${port}/${appName}/`;
+    const url = urlResolve(realmBase, `logout?redirect_uri=${encodeURIComponent(nextUrl)}`);
+    res.redirect(url);
+  });
 
   return router;
 }
