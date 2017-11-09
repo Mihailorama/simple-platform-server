@@ -17,6 +17,11 @@ supplying basic versions of the facilities it provides.
 Usage
 -----
 
+To run the server you need a client ID (in the OAuth2 sense) on the CoreFiling
+Platform. The credentials for this are passed to the server via environment
+variables `CLIENT_ID` and `CLIENT_SECRET`. This is compatible with the way
+server secrets are passed to servers hosted on Kubernetes, Heroku, etc.
+
 Add this package as a dependency of your project:
 
 ```shell
@@ -28,21 +33,29 @@ Then add it as a script in `package.json`:
 ```json
 "scripts": {
     …
-    "start": "simple-platform-server --port 8080 --staticDir www -appName name-of-your-app"
+    "start": "simple-platform-server --staticDir www -appName name-of-your-app"
 }
 ```
 
-You can then visit your app at <http://localhost:8008/name-of-your-app/>. The
+And run the server with something like
+
+    env $(cat .env) yarn start
+
+You can then visit your app at <http://localhost:8080/name-of-your-app/>. The
 first time you do it will redirect you to the CoreFiling platform log-in page.
 Once you are logged in the application should run normally.
 
 Your app consists of HTML and JavaScript files in the `--staticDir` directory.
 
+Customize the port number listened to by setting environmwent variable `PORT` or
+by adding a `--port` command-line option.
+
 
 Conventions
 -----------
 
-APIs are available with URLs starting with `/api/`_name_`/v1/`. For example, the base URL of the Document Service is
+APIs are available with URLs starting with `/api/`_name_`/v1/`. For example, the
+base URL of the Document Service is
 `http://localhost:8080/api/document-service/v1/`.
 
 Additional URLs recognized by the server are
@@ -51,7 +64,8 @@ Additional URLs recognized by the server are
 * `/api/user` provides information about the currently logged-in user;
 * `/api/apps` provides information for the apps menu.
 
-The last two are exceptions to the other API endpoints because they are supplied by the gateway itself, not a backend service.
+The last two are exceptions to the other API endpoints because they are supplied
+by the gateway itself, not a backend service.
 
 
 In production

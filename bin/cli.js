@@ -7,19 +7,29 @@ const morgan = require('morgan');
 const path = require('path');
 const { createRouter } = require('../build/serve');
 
-
 const options = cli.parse({
   appName: ['a', 'Identifies the app', 'string', 'simple-platform-server'],
-  port: ['p', 'Port to listen to', 'number', 8080],
+  port: ['p', 'Port to listen to', 'number', process.env.PORT || 8080],
   staticDir: ['d', 'Where to find HTML, JavaScript and CSS files.', 'dir', path.join(__dirname, '../www')],
 });
+
+if (!process.env.CLIENT_ID || !process.env.CLIENT_SECRET) {
+  cli.fatal('CLIENT_ID and CLIENT_SECRET must be defined in the environment');
+}
+options.client = {
+  id: process.env.CLIENT_ID,
+  secret: process.env.CLIENT_SECRET,
+}
+if (process.env.CFL_DEV) {
+  options.realmName = 'dev';
+}
 
 const app = express();
 
 // We need sessions to store the access tokens.
 app.use(session({
   name: `${options.appName}.sid`,
-  secret: 'Perhaps-Attend-Know-Repair-8',  // TODO. Make this overridable in deployment.
+  secret: 'Perhaps-Attend-Know-Repair-8',  // In production environment this should be configurable.
   resave: false,  // This will need to be adjusted according to the type of session store.
   saveUninitialized: false,
   // In a production environment you need to add a `store` here.
