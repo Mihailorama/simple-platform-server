@@ -8,6 +8,7 @@
 import express = require('express');
 import { Request, Router } from 'express';
 import proxy = require('express-http-proxy');
+import request = require('request-promise');
 import { create as simpleOAuth2Create, AccessToken } from 'simple-oauth2';
 import { resolve as urlResolve } from 'url';
 
@@ -98,12 +99,41 @@ export function createRouter(options: Partial<Options> = {}): Router {
   // When we introduce routing we will need to add a clause that maps all URLs
   // not corresponding to static files to index.html.
 
+  // Middleware to ensure if we have a token it is refreshed before handling API endpoints.
+  router.use('/api', (req, _, next) => {
+    // Refresh token if it exists and has expired.
+    if (req.session && req.session.token) {
+      const token: {access_token: string} = req.session.token;
+      const accessToken = oauth2.accessToken.create(token);
+      if (accessToken.expired()) {
+        accessToken.refresh()
+          .then(result => {
+            req.session!.token = result.token;
+            next();
+          })
+          .catch(error => console.log('Error refreshing token: ', error.message, error));
+        return;
+      }
+    }
+    next();
+  });
+
   // These 2 APIs are implemented not in backend servers but in the proxy (which this server is standing in for).
-  router.get('/api/user', (_, res) => {
-    res.json({
-      email: 'Suman.Normanson@example.com',  // TODO. Make a call to Keycloak to get real user name.
-      name: 'Suman Normanson',
-    });
+  router.get('/api/user', (req, res) => {
+    if (req.session && req.session.token) {
+      request({
+        url: urlResolve(realmBase, 'userinfo'),
+        headers: {
+          Authorization: `Bearer ${req.session.token.access_token}`,
+        },
+        json: true,
+      })
+      .then(data => res.json(data))
+      .catch(error => {
+        console.log('Error calling userinfo', error.message, error);
+        res.send({error: error.message});
+      });
+    }
   });
 
   router.get('/api/apps', (_, res) => {
@@ -112,40 +142,20 @@ export function createRouter(options: Partial<Options> = {}): Router {
     ]);
   });
 
-  // Proxy API calls, adding the authentication header.
-  router.use(
-    '/api',
-    (req, _, next) => {
-      // Refresh token if it exists and has expired.
-      if (req.session && req.session.token) {
-        const token: {access_token: string} = req.session.token;
-        const accessToken = oauth2.accessToken.create(token);
-        if (accessToken.expired()) {
-          accessToken.refresh()
-            .then(result => {
-              req.session!.token = result.token;
-              next();
-            })
-            .catch(error => console.log('Error refreshing token: ', error.message, error));
-          return;
+  router.use('/api', proxy(apiBase, {
+    proxyReqOptDecorator: (proxyReqOpts, srcReq) => {
+      if (srcReq.session && srcReq.session.token) {
+        const token: {access_token: string} = srcReq.session.token;
+        const headerValue = `Bearer ${token.access_token}`;
+        if (!proxyReqOpts.headers) {
+          proxyReqOpts.headers = {Authorization: headerValue};
+        } else {
+          proxyReqOpts.headers.Authorization = headerValue;
         }
       }
-      next();
+      return proxyReqOpts;
     },
-    proxy(apiBase, {
-      proxyReqOptDecorator: (proxyReqOpts, srcReq) => {
-        if (srcReq.session && srcReq.session.token) {
-          const token: {access_token: string} = srcReq.session.token;
-          const headerValue = `Bearer ${token.access_token}`;
-          if (!proxyReqOpts.headers) {
-            proxyReqOpts.headers = {Authorization: headerValue};
-          } else {
-            proxyReqOpts.headers.Authorization = headerValue;
-          }
-        }
-        return proxyReqOpts;
-      },
-    }));
+  }));
 
   // For consistency with the way the app is deployed in labs.corefiling.com, we insert $APP/ as a URL prefix.
   router.get('/', (_, res) => {
