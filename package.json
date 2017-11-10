@@ -1,0 +1,52 @@
+{
+  "name": "@cfl/simple-platform-server",
+  "version": "0.1.0-local",
+  "cfl": {
+    "group": {
+      "name": "labs"
+    }
+  },
+  "description": "Simple server for web apps using the CoreFiling True North Platform APIs.",
+  "repository": "https://gitlab.int.corefiling.com/labs/simple-platform-server.git",
+  "author": "CoreFiling <support@corefiling.com>",
+  "license": "Apache-2.0",
+  "private": false,
+  "main": "build/serve.js",
+  "bin": "build/cli.js",
+  "files": [
+    "build"
+  ],
+  "scripts": {
+    "build": "tsc && cp -p bin/* build/",
+    "set-build-version": "npm version \"$(ci-build-version -f package.json)\"",
+    "lint": "tslint -t stylish -c tslint.json --project tsconfig.json",
+    "test": "echo No tests yet.",
+    "prestart": "npm run build",
+    "start": "build/cli.js",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@types/express": "^4.0.39",
+    "@types/express-session": "^1.15.5",
+    "@types/morgan": "^1.7.35",
+    "@types/request": "^2.0.7",
+    "@types/request-promise": "^4.1.39",
+    "@types/simple-oauth2": "^1.0.4",
+    "cli": "^1.0.1",
+    "express": "^4.16.2",
+    "express-http-proxy": "^1.0.7",
+    "express-session": "^1.15.6",
+    "morgan": "^1.9.0",
+    "request": "^2.83.0",
+    "request-promise": "^4.2.2",
+    "simple-oauth2": "^1.4.0"
+  },
+  "devDependencies": {
+    "@cfl/tslint-config": "^0.6.1",
+    "@janslow/ci-build-version": "^0.1.1",
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "tslint": "^5.8.0",
+    "typescript": "^2.6.1"
+  }
+}

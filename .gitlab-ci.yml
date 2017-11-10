@@ -1,0 +1,102 @@
+# Setup
+stages:
+  - build
+  - publish
+  - deploy
+
+cache:
+  key: "$CI_BUILD_REF_NAME" # Per branch caching
+  paths:
+    - node_modules
+
+# Job Templates
+.template_docker: &template_docker
+  tags:
+    - docker
+
+.template_docker_privileged: &template_docker_privileged
+  tags:
+    - docker-privileged
+
+.template_npm: &template_npm
+  image: artifacts.int.corefiling.com:5000/nimbus-tools/build-npm-package:0.10.0
+
+
+# Build stage
+## Templates
+.template_npm_script: &template_npm_script
+  <<: *template_docker_privileged
+  <<: *template_npm
+  stage: build
+  before_script:
+    - time yarn install --frozen-lockfile
+    - npm config set git-tag-version false
+    - npm run set-build-version
+  script:
+    - time npm run $CI_BUILD_NAME
+
+## Jobs
+# build version:
+#   <<: *template_docker
+#   <<: *template_npm
+#   stage: build
+#   artifacts:
+#     expire_in: 1 week
+#     paths:
+#       - build.version
+#   before_script:
+#     - npm install -g @janslow/ci-build-version
+#   script:
+#     - ci-build-version -f package.json > build.version
+#     - echo `cat build.version`
+
+check yarn.lock:
+  stage: build
+  image: alpine
+  tags:
+  - docker
+  script:
+    grep -e 'int\.corefiling\.com' yarn.lock && exit 1 || echo OK
+  only:
+  - tags
+  - /^(release|hotfix)\//
+
+build:
+  <<: *template_npm_script
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - build
+      - bin
+
+lint: *template_npm_script
+
+
+# Publish stage
+publish local:
+  <<: *template_docker_privileged
+  <<: *template_npm_script
+  stage: publish
+  dependencies:
+    - build
+  variables:
+    publish: 'true'
+  script:
+    - /app/scripts/build.py
+  only:
+    - develop@labs/simple-platform-server
+    - tags@labs/simple-platform-server
+
+publish public:
+  <<: *template_docker_privileged
+  <<: *template_npm_script
+  stage: publish
+  dependencies:
+    - build
+  variables:
+    publish: 'true'
+    public: 'true'
+  script:
+    - /app/scripts/build.py
+  only:
+    - tags@labs/simple-platform-server
