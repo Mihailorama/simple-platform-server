@@ -1,8 +1,10 @@
 /**
- * Server for our app.
+ * Simple Server for web apps running against the CoreFiling True North Data Platform.
  *
- * /auth/login and /auth/logout -- redirect to OAuth2 endpoints
- * /
+ * • redirects from / to /APP/
+ * • handles logging in user if user not logged in
+ * • proxies API requests and adds Authorization header
+ * • serves static files
  */
 
 import express = require('express');
@@ -25,19 +27,25 @@ interface Options {
   port: number;
 }
 
+/**
+ * Create an Express router (mini-app).
+ *
+ * @param options Options
+ */
 export function createRouter(options: Partial<Options> = {}): Router {
   const {
     appName = 'simple-platform-server',
     staticDir = 'www',
-    client = {
-      id: 'pdc-inv-109',
-      secret: 'PUBLIC',
-    },
+    client,
     authBase = 'https://login.corefiling.com',
-    realmName = 'dev', // TODO. Change to public realm.
+    realmName = 'platform',
     apiBase = 'https://platform-api.cfl.io/',
     port = 8080,
   } = options;
+
+  if (!client) {
+    throw new Error('Client ID and secreet must be specified');
+  }
 
   const router = Router();
 
@@ -77,7 +85,7 @@ export function createRouter(options: Partial<Options> = {}): Router {
       return;
     }
 
-    // Ask authentication server to ask user to log in.
+    // Redirect to login page.
     const state = {
       next: req.path,
     };
@@ -138,7 +146,7 @@ export function createRouter(options: Partial<Options> = {}): Router {
 
   router.get('/api/apps', (_, res) => {
     res.json([
-      {id: appName, name: appName, href: `${appName}`, features: []},
+      {id: appName, name: appName, href: `/${appName}/`, features: []},
     ]);
   });
 

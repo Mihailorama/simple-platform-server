@@ -21,8 +21,9 @@
     "set-build-version": "npm version \"$(ci-build-version -f package.json)\"",
     "lint": "tslint -t stylish -c tslint.json --project tsconfig.json",
     "test": "echo No tests yet.",
-    "start": "tsc && build/cli.js",
-    "prepublishOnly": "npm build"
+    "prestart": "npm run build",
+    "start": "build/cli.js",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "@types/express": "^4.0.39",

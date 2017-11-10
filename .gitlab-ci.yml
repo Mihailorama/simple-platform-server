@@ -19,7 +19,7 @@ cache:
     - docker-privileged
 
 .template_npm: &template_npm
-  image: artifacts.int.corefiling.com:5000/nimbus-tools/build-npm-package:0.6.0
+  image: artifacts.int.corefiling.com:5000/nimbus-tools/build-npm-package:dev
 
 
 # Build stage
@@ -73,7 +73,7 @@ lint: *template_npm_script
 
 
 # Publish stage
-publish npm:
+publish local:
   <<: *template_docker_privileged
   <<: *template_npm_script
   stage: publish
@@ -82,7 +82,21 @@ publish npm:
   variables:
     publish: 'true'
   script:
-    - time /app/scripts/build.py
+    - /app/scripts/build.py
   only:
     - develop@labs/simple-platform-server
+    - tags@labs/simple-platform-server
+
+publish public:
+  <<: *template_docker_privileged
+  <<: *template_npm_script
+  stage: publish
+  dependencies:
+    - build
+  variables:
+    publish: 'true'
+    public: 'true'
+  script:
+    - /app/scripts/build.py
+  only:
     - tags@labs/simple-platform-server
