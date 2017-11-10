@@ -19,7 +19,7 @@ cache:
     - docker-privileged
 
 .template_npm: &template_npm
-  image: artifacts.int.corefiling.com:5000/nimbus-tools/build-npm-package:dev
+  image: artifacts.int.corefiling.com:5000/nimbus-tools/build-npm-package:0.10.0
 
 
 # Build stage
