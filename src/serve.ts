@@ -44,7 +44,7 @@ export function createRouter(options: Partial<Options> = {}): Router {
   } = options;
 
   if (!client) {
-    throw new Error('Client ID and secreet must be specified');
+    throw new Error('Client ID and secret must be specified');
   }
 
   const router = Router();
