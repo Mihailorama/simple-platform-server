@@ -19,7 +19,7 @@ cache:
     - docker-privileged
 
 .template_npm: &template_npm
-  image: artifacts.int.corefiling.com:5000/nimbus-tools/build-npm-package:dev
+  image: artifacts.int.corefiling.com:5000/nimbus-tools/build-npm-package:0.10.0
 
 
 # Build stage
@@ -56,7 +56,7 @@ check yarn.lock:
   tags:
   - docker
   script:
-    grep -e 'int\.corefiling\.com' yarn.lock && exit 1
+    grep -e 'int\.corefiling\.com' yarn.lock && exit 1 || echo OK
   only:
   - tags
   - /^(release|hotfix)\//
