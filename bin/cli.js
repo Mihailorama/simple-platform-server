@@ -22,6 +22,7 @@ options.client = {
 }
 if (process.env.CFL_DEV) {
   options.realmName = 'dev';
+  options.apiBase = 'https://labs-api.cfl.io/';
 }
 
 const app = express();
