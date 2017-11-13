@@ -73,6 +73,7 @@ lint: *template_npm_script
 
 
 # Publish stage
+
 publish local:
   <<: *template_docker_privileged
   <<: *template_npm_script
@@ -100,3 +101,17 @@ publish public:
     - /app/scripts/build.py
   only:
     - tags@labs/simple-platform-server
+
+docker image:
+  <<: *template_docker_privileged
+  stage: publish
+  dependencies:
+  - build
+  only:
+    - develop@labs/simple-platform-server
+    - tags@labs/simple-platform-server
+  image: artifacts.int.corefiling.com:5000/nimbus-tools/build-dockerfile:0.8.0
+  script:
+    - /app/scripts/build.py
+  variables:
+    publish: "true"
