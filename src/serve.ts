@@ -59,7 +59,7 @@ export function createRouter(options: Partial<Options> = {}): Router {
   });
 
   const callbackPath = '/auth/callback';
-  const redirectUriFromRequest = (req: Request) => `${req.protocol}://${req.hostname}:${port}${callbackPath}`;
+  const redirectUriFromRequest = (req: Request) => `${req.protocol}://${req.header('host')}${callbackPath}`;
 
   if (oauth2) {
     // Middleware to check whether user is logged in.

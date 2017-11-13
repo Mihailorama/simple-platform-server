@@ -23,6 +23,7 @@ if (process.env.CLIENT_ID && process.env.CLIENT_SECRET) {
     secret: process.env.CLIENT_SECRET,
   }
 } else {
+  app.set('trust proxy', true);
   cli.info('Running without authentication.');
   cli.info('Set CLIENT_ID and CLIENT_SECRET in the environment run with authentication.');
 }

@@ -74,10 +74,16 @@ In production
 There are three obvious options
 
 * Place this server behind a suitable revers proxy like NGINX, Varnish, etc.;
-* Use the router defined in `build/serve.js`, allowing you to supply a
+* Replace `cli.js` with your own server expliting the module `build/serve.js`,
+  allowing you to supply a
   persistent session store and custom logging configuration;
 * Write an entirely different server based on the conventions of this one,
   allowing you to align its behaviours with your existing infrastructure.
+
+The `Dockerfile` provided allows the creation of a docker container that
+requires environment variables `APP_NAME`, `STATIC_DIR`, `CLIENT_ID`, and
+`CLIENT_SECRET`. This can be used directly or extended in a Dockerfile for the
+web app.
 
 
 Licence
