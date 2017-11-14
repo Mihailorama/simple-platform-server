@@ -13,7 +13,7 @@ const options = cli.parse({
   staticDir: ['d', 'Where to find HTML, JavaScript and CSS files.', 'dir', path.join(__dirname, '../www')],
 });
 
-if (!process.env.CLIENT_ID != !process.env.CLIENT_SECRET) {
+if (!process.env.CLIENT_ID !== !process.env.CLIENT_SECRET) {
   cli.fatal('CLIENT_ID and CLIENT_SECRET must both be defined in the environment');
 }
 if (process.env.CLIENT_ID && process.env.CLIENT_SECRET) {
@@ -21,7 +21,7 @@ if (process.env.CLIENT_ID && process.env.CLIENT_SECRET) {
   options.client = {
     id: process.env.CLIENT_ID,
     secret: process.env.CLIENT_SECRET,
-  }
+  };
 } else {
   cli.info('Running without authentication.');
   cli.info('Set CLIENT_ID and CLIENT_SECRET in the environment run with authentication.');
