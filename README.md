@@ -3,24 +3,20 @@ Simple Platform Server
 
 Simple server for web apps using the CoreFiling True North Platform APIs.
 
-The conventions for a client-side platform app are for the APIs and the
-application files to be served from the same domain. This means the JavaScript
-or TypeScript code can always assume the User API is at `/api/user` instead of
-having umpteen endpoints supplied via configuration. In CoreFiling’s production
-deployment this is achieved through a gateway that handles OAuth2
-authentication and proxies the back-end APIs and static files.
+The server can be configured with your OAuth 2 client ID and secret.  It
+performs the OAuth 2 authorization code grant against the CoreFiling OAuth 2
+server and maintains the bearer token needed for API access in the http
+session.
 
-This server allows a web app to be run outside of the CoreFiling cluster, by
-supplying basic versions of the facilities it provides.
-
+All API requests made by the UI are proxied through this server which adds
+the token to the request.
 
 Usage
 -----
 
-To run the server you need a client ID (in the OAuth2 sense) on the CoreFiling
+To run the server you need an OAuth 2 client ID and secret for the CoreFiling
 Platform. The credentials for this are passed to the server via environment
-variables `CLIENT_ID` and `CLIENT_SECRET`. This is compatible with the way
-server secrets are passed to servers hosted on Kubernetes, Heroku, etc.
+variables `CLIENT_ID` and `CLIENT_SECRET`.
 
 Add this package as a dependency of your project:
 
@@ -39,15 +35,19 @@ Then add it as a script in `package.json`:
 
 And run the server with something like
 
-    env $(cat .env) yarn start
+```
+$ export CLIENT_ID=YOUR_ID
+$ export CLIENT_SECRET=YOUR_SECRET
+$ yarn start
+```
 
 You can then visit your app at <http://localhost:8080/name-of-your-app/>. The
-first time you do it will redirect you to the CoreFiling platform log-in page.
+first time you do it will redirect you to the CoreFiling platform login page.
 Once you are logged in the application should run normally.
 
 Your app consists of HTML and JavaScript files in the `--staticDir` directory.
 
-Customize the port number listened to by setting environmwent variable `PORT` or
+Customize the port number listened to by setting environment variable `PORT` or
 by adding a `--port` command-line option.
 
 
@@ -58,7 +58,7 @@ APIs are available with URLs starting with `/api/`_name_`/v1/`. For example, the
 base URL of the Document Service is
 `http://localhost:8080/api/document-service/v1/`.
 
-Additional URLs recognized by the server are
+Additional URLs recognised by the server are
 
 * `/auth/logout` to log the user out;
 * `/api/user` provides information about the currently logged-in user;
@@ -66,24 +66,6 @@ Additional URLs recognized by the server are
 
 The last two are exceptions to the other API endpoints because they are supplied
 by the gateway itself, not a backend service.
-
-
-In production
--------------
-
-There are three obvious options
-
-* Place this server behind a suitable revers proxy like NGINX, Varnish, etc.;
-* Replace `cli.js` with your own server expliting the module `build/serve.js`,
-  allowing you to supply a
-  persistent session store and custom logging configuration;
-* Write an entirely different server based on the conventions of this one,
-  allowing you to align its behaviours with your existing infrastructure.
-
-The `Dockerfile` provided allows the creation of a docker container that
-requires environment variables `APP_NAME`, `STATIC_DIR`, `CLIENT_ID`, and
-`CLIENT_SECRET`. This can be used directly or extended in a Dockerfile for the
-web app.
 
 
 Licence
