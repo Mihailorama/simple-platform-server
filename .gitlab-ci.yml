@@ -97,7 +97,7 @@ docker image:
     - develop@labs/simple-platform-server
     - tags@labs/simple-platform-server
     - feature/inv-109-sans-auth
-  image: artifacts.int.corefiling.com:5000/nimbus-tools/build-dockerfile:0.8.0
+  image: artifacts.int.corefiling.com:5000/nimbus-tools/build-dockerfile:0.8.1-dev.169648
   script:
     - /app/scripts/build.py
   variables:
