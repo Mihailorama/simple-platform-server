@@ -1,11 +1,11 @@
 #! /usr/bin/env node
 
-const cli = require('cli');
-const express = require('express');
-const session = require('express-session');
-const morgan = require('morgan');
-const path = require('path');
-const { createRouter } = require('../build/serve');
+import * as cli from 'cli';
+import * as express from 'express';
+import * as session from 'express-session';
+import * as morgan from 'morgan';
+import * as path from 'path';
+import { createRouter } from './serve';
 
 const options = cli.parse({
   appName: ['a', 'Identifies the app.', 'string', 'simple-platform-server'],
@@ -13,7 +13,7 @@ const options = cli.parse({
   staticDir: ['d', 'Where to find HTML, JavaScript and CSS files.', 'dir', path.join(__dirname, '../www')],
 });
 
-if (!process.env.CLIENT_ID != !process.env.CLIENT_SECRET) {
+if (!process.env.CLIENT_ID !== !process.env.CLIENT_SECRET) {
   cli.fatal('CLIENT_ID and CLIENT_SECRET must both be defined in the environment');
 }
 if (process.env.CLIENT_ID && process.env.CLIENT_SECRET) {
@@ -21,7 +21,7 @@ if (process.env.CLIENT_ID && process.env.CLIENT_SECRET) {
   options.client = {
     id: process.env.CLIENT_ID,
     secret: process.env.CLIENT_SECRET,
-  }
+  };
 } else {
   cli.info('Running without authentication.');
   cli.info('Set CLIENT_ID and CLIENT_SECRET in the environment run with authentication.');
