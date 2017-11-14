@@ -1,11 +1,11 @@
 #! /usr/bin/env node
 
-const cli = require('cli');
-const express = require('express');
-const session = require('express-session');
-const morgan = require('morgan');
-const path = require('path');
-const { createRouter } = require('../build/serve');
+import * as cli from 'cli';
+import * as express from 'express';
+import * as session from 'express-session';
+import * as morgan from 'morgan';
+import * as path from 'path';
+import { createRouter } from './serve';
 
 const options = cli.parse({
   appName: ['a', 'Identifies the app.', 'string', 'simple-platform-server'],
