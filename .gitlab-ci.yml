@@ -36,20 +36,6 @@ cache:
     - time npm run $CI_BUILD_NAME
 
 ## Jobs
-# build version:
-#   <<: *template_docker
-#   <<: *template_npm
-#   stage: build
-#   artifacts:
-#     expire_in: 1 week
-#     paths:
-#       - build.version
-#   before_script:
-#     - npm install -g @janslow/ci-build-version
-#   script:
-#     - ci-build-version -f package.json > build.version
-#     - echo `cat build.version`
-
 check yarn.lock:
   stage: build
   image: alpine
