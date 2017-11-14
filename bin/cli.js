@@ -8,24 +8,35 @@ const path = require('path');
 const { createRouter } = require('../build/serve');
 
 const options = cli.parse({
-  appName: ['a', 'Identifies the app', 'string', 'simple-platform-server'],
-  port: ['p', 'Port to listen to', 'number', process.env.PORT || 8080],
+  appName: ['a', 'Identifies the app.', 'string', 'simple-platform-server'],
+  port: ['p', 'Port to listen to.', 'number', process.env.PORT || 8080],
   staticDir: ['d', 'Where to find HTML, JavaScript and CSS files.', 'dir', path.join(__dirname, '../www')],
 });
 
-if (!process.env.CLIENT_ID || !process.env.CLIENT_SECRET) {
-  cli.fatal('CLIENT_ID and CLIENT_SECRET must be defined in the environment');
+if (!process.env.CLIENT_ID != !process.env.CLIENT_SECRET) {
+  cli.fatal('CLIENT_ID and CLIENT_SECRET must both be defined in the environment');
 }
-options.client = {
-  id: process.env.CLIENT_ID,
-  secret: process.env.CLIENT_SECRET,
+if (process.env.CLIENT_ID && process.env.CLIENT_SECRET) {
+  cli.info('Running with authentication.');
+  options.client = {
+    id: process.env.CLIENT_ID,
+    secret: process.env.CLIENT_SECRET,
+  }
+} else {
+  cli.info('Running without authentication.');
+  cli.info('Set CLIENT_ID and CLIENT_SECRET in the environment run with authentication.');
 }
 if (process.env.CFL_DEV) {
+  cli.info('Using CoreFiling dev backend.');
   options.realmName = 'dev';
   options.apiBase = 'https://labs-api.cfl.io/';
 }
 
 const app = express();
+
+if (process.env.CLIENT_ID && process.env.CLIENT_SECRET) {
+  app.set('trust proxy', true);
+}
 
 // We need sessions to store the access tokens.
 app.use(session({
