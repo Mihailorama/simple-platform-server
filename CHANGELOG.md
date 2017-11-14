@@ -1,5 +1,7 @@
 # Changelog
 
+## develop
+
 ## 1.0.0
 - Support simple mode where authentication is dealt with externally, intended
   for internal CoreFiling use.
