@@ -26,8 +26,8 @@ if (process.env.CLIENT_ID && process.env.CLIENT_SECRET) {
   cli.info('Running with default demonstration client credentials.');
   // Intentionally public demonstration credentials.  These require a user account.
   options.client = {
-    id: 'XXX',
-    secret: 'XXX',
+    id: 'platform-development-client',
+    secret: 'not required',
   };
 }
 if (process.env.CFL_DEV) {

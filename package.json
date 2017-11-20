@@ -12,7 +12,7 @@
   "license": "Apache-2.0",
   "private": false,
   "main": "build/serve.js",
-  "bin": "build/cli.js",
+  "bin": "node build/cli.js",
   "files": [
     "build"
   ],
@@ -22,7 +22,7 @@
     "lint": "tslint -t stylish -c tslint.json --project tsconfig.json",
     "test": "echo No tests yet.",
     "prestart": "npm run build",
-    "start": "build/cli.js",
+    "start": "node build/cli.js",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
