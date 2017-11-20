@@ -8,6 +8,8 @@ performs the OAuth 2 authorization code grant against the CoreFiling OAuth 2
 server and maintains the bearer token needed for API access in the http
 session.
 
+If no credentials are configured it defaults to the demonstration client.
+
 All API requests made by the UI are proxied through this server which adds
 the token to the request.
 
@@ -48,7 +50,10 @@ Once you are logged in the application should run normally.
 Your app consists of HTML and JavaScript files in the `--staticDir` directory.
 
 Customize the port number listened to by setting environment variable `PORT` or
-by adding a `--port` command-line option.
+by adding a `--port` command-line option. Note that overriding the port will
+prevent login if the port no longer matches a registered redirect URI for the
+application. The default credentials support a redirect URI of
+'http://localhost:8080/\*' for testing.
 
 
 Conventions

@@ -14,7 +14,7 @@ const options = cli.parse({
 });
 
 if (!process.env.CLIENT_ID !== !process.env.CLIENT_SECRET) {
-  cli.fatal('CLIENT_ID and CLIENT_SECRET must both be defined in the environment');
+  cli.fatal('CLIENT_ID and CLIENT_SECRET must both be unset (to use defaults) or both be set in the environment');
 }
 if (process.env.CLIENT_ID && process.env.CLIENT_SECRET) {
   cli.info('Running with authentication.');
@@ -23,11 +23,15 @@ if (process.env.CLIENT_ID && process.env.CLIENT_SECRET) {
     secret: process.env.CLIENT_SECRET,
   };
 } else {
-  cli.info('Running without authentication.');
-  cli.info('Set CLIENT_ID and CLIENT_SECRET in the environment run with authentication.');
+  cli.info('Running with default demonstration client credentials.');
+  // Intentionally public demonstration credentials.  These require a user account.
+  options.client = {
+    id: 'XXX',
+    secret: 'XXX',
+  };
 }
 if (process.env.CFL_DEV) {
-  cli.info('Using CoreFiling dev backend.');
+  cli.info('Using CoreFiling internal development backend.');
   options.realmName = 'dev';
   options.apiBase = 'https://labs-api.cfl.io/';
 }

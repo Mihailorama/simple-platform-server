@@ -39,7 +39,7 @@ export function createRouter(options: Partial<Options> = {}): Router {
     client,
     authBase = 'https://login.corefiling.com',
     realmName = 'platform',
-    apiBase = 'https://labs-api.corefiling.com/',
+    apiBase = 'https://api.labs.corefiling.com/',
     port = 8080,
   } = options;
 
