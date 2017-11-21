@@ -12,7 +12,7 @@
   "license": "Apache-2.0",
   "private": false,
   "main": "build/serve.js",
-  "bin": {"simple-platform-server": "build/cli.js"},
+  "bin": "build/cli.js",
   "files": [
     "build"
   ],
