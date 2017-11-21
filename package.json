@@ -1,6 +1,6 @@
 {
   "name": "@cfl/simple-platform-server",
-  "version": "1.0.1-local",
+  "version": "2.0.0-local",
   "cfl": {
     "group": {
       "name": "labs"
