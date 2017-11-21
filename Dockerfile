@@ -6,4 +6,4 @@ ENV STATIC_DIR=/home/node/app/www
 COPY node_modules /home/node/app/node_modules
 COPY www $STATIC_DIR
 COPY build /home/node/app/build
-CMD node /home/node/app/build/cli.js -a $APP_NAME -d $STATIC_DIR
+CMD node /home/node/app/build/cli.js -a $APP_NAME -d $STATIC_DIR --noAuth

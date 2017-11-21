@@ -1,6 +1,6 @@
 {
   "name": "@cfl/simple-platform-server",
-  "version": "1.0.0-local",
+  "version": "2.0.0-local",
   "cfl": {
     "group": {
       "name": "labs"
@@ -22,7 +22,7 @@
     "lint": "tslint -t stylish -c tslint.json --project tsconfig.json",
     "test": "echo No tests yet.",
     "prestart": "npm run build",
-    "start": "build/cli.js",
+    "start": "node build/cli.js",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
