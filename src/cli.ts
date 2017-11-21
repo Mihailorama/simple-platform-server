@@ -9,6 +9,7 @@ import { createRouter } from './serve';
 
 const options = cli.parse({
   appName: ['a', 'Identifies the app.', 'string', 'simple-platform-server'],
+  noAuth: ['n', 'Disables OAuth 2 authentication.', 'boolean'],
   port: ['p', 'Port to listen to.', 'number', process.env.PORT || 8080],
   staticDir: ['d', 'Where to find HTML, JavaScript and CSS files.', 'dir', path.join(__dirname, '../www')],
 });
@@ -23,12 +24,17 @@ if (process.env.CLIENT_ID && process.env.CLIENT_SECRET) {
     secret: process.env.CLIENT_SECRET,
   };
 } else {
-  cli.info('Running with default demonstration client credentials.');
-  // Intentionally public demonstration credentials.  These require a user account.
-  options.client = {
-    id: 'platform-development-client',
-    secret: 'not required',
-  };
+  if (options.noAuth) {
+    cli.info('Running without authentication.');
+  }
+  else {
+    cli.info('Running with default demonstration client credentials.');
+    // Intentionally public demonstration credentials.  These require a user account.
+    options.client = {
+      id: 'platform-development-client',
+      secret: 'not required',
+    };
+  }
 }
 if (process.env.CFL_DEV) {
   cli.info('Using CoreFiling internal development backend.');
@@ -56,6 +62,7 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms'))
 
 app.use(createRouter(options));
 
-const server = app.listen(options.port, () => {
-  console.log(`${options.appName} listening on port ${server.address().port}`);
+const server = app.listen(options.port, 'localhost', () => {
+  const {port} = server.address();
+  console.log(`${options.appName} running at http://localhost:${port}/${options.appName}/`);
 });
