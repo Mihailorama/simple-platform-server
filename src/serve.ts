@@ -39,7 +39,7 @@ export function createRouter(options: Partial<Options> = {}): Router {
     client,
     authBase = 'https://login.corefiling.com',
     realmName = 'platform',
-    apiBase = 'https://labs-api.corefiling.com/',
+    apiBase = 'https://api.labs.corefiling.com/',
     port = 8080,
   } = options;
 
@@ -99,10 +99,12 @@ export function createRouter(options: Partial<Options> = {}): Router {
 
   // Serve the static files from the app prefix.
   console.log('Static files from', staticDir);
-  router.use(`/${appName}/`, express.static(staticDir));
-
-  // When we introduce routing we will need to add a clause that maps all URLs
-  // not corresponding to static files to index.html.
+  router.use(
+    `/${appName}/`,
+    express.static(staticDir),
+    // Fallback to support history API routing.
+    (_, res) => res.sendfile(staticDir + '/index.html'),
+  );
 
   if (realmBase && oauth2) {
     // Middleware to ensure if we have a token it is refreshed before handling API endpoints.
