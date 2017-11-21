@@ -1,5 +1,7 @@
 # Changelog
 
+## develop
+
 ## 2.0.0
 - [breaking] Introduce default OAuth 2 credentials.
 - [breaking] Add `-n` `--noAuth` option to disable all OAuth 2 handling. Previously this was the default behaviour.
