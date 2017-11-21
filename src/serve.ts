@@ -163,6 +163,7 @@ export function createRouter(options: Partial<Options> = {}): Router {
         }
         return proxyReqOpts;
       },
+      parseReqBody: false,
     }));
 
     // When user logs in the authentication server redirects them to this URL.
